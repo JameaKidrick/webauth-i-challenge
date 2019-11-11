@@ -1,20 +1,53 @@
 const db = require('../../data/dbConfig');
 
 module.exports = {
-
+  find,
+  findBy,
+  findById,
+  add,
+  remove
 }
 
-// If the user is logged in, respond with an array of all the users contained in the database. If the user is not logged in respond with the correct status code and the message: 'You shall not pass!'.
+// respond with an array of all the users contained in the database
 function find() {
-
+  return db('authorization')
 }
 
-// Creates a user using the information sent inside the body of the request. Hash the password before saving the user to the database.
-function register() {
-
+// find specific user by username
+function findBy(credential) {
+  return db('authorization')
+    .where({ 'authorization.username':credential })
+    .first()
 }
 
-// Use the credentials sent inside the body to authenticate the user. On successful login, create a new session for the user and send back a 'Logged in' message and a cookie that contains the user id. If login fails, respond with the correct status code and the message: 'You shall not pass!'
-function login() {
+// find specific user by id
+function findById(id){
+  return db('authorization')
+    .where({ 'authorization.id': id })
+    .first();
+};
 
+// creates a user using the information sent inside the body of the request
+function add(user) {
+  return db('authorization')
+    .insert(user, 'id')
+    .then(id => {
+      return findById(id[0])
+      .select('id','username', 'created_at', 'updated_at')
+    })
+}
+
+// deletes a user
+function remove(id) {
+  return findById(id)
+    .select('id','username', 'created_at', 'updated_at')
+    .then(user => {
+      return db('authorization')
+        .del()
+        .where({ 'authorization.id': id })
+        .then(deleted => {
+          return user
+        })
+    })
+  
 }

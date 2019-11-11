@@ -5,7 +5,7 @@ exports.up = function(knex) {
       .increments();
 
     table
-      .string('username', 128).notNullable();
+      .string('username', 128).notNullable().unique();
 
     table
       .string('password', 128).notNullable();
